@@ -33,38 +33,36 @@ task(:umbrella) do
 
       weather_parsed = JSON.parse(weather_raw_file)
 
-      weather_c = weather_parsed.fetch("currently", {"temperature" => nil, "summary" => nil})
+      weather_c = weather_parsed.fetch("currently", {"temperature" => "", "summary" => ""})
         weather_temp = weather_c.fetch("temperature")
         weather_currenttemp = weather_temp.round(0)
         weather_currentweather = weather_c.fetch("summary")
 
-      # weather_hourly = weather_parsed.fetch("hourly", nil)
-      # if weather_hourly.class != Hash
-      #   weather_hourly_status = false
-      # end
+      weather_hourly = weather_parsed.fetch("hourly", {"data" => ""})
 
-      weather_minutely = weather_parsed.fetch("minutely", {"summary" => nil})
+      weather_minutely = weather_parsed.fetch("minutely", {"summary" => ""})
   
       weather_nexthoursummary = weather_minutely.fetch("summary") #Use this for summary of next hour
-      ap weather_nexthoursummary
 
-      # weather_currentsummary = "Current weather is: " + weather_currentweather + ", with a temperature of " + weather_currenttemp.to_s + " degrees Farenheit. " + weather_nexthoursummary
-      
-      # weather_hourly_data = weather_hourly.fetch("data")
+      weather_currentsummary = "Current weather is: " + weather_currentweather + ", with a temperature of " + weather_currenttemp.to_s + " degrees Farenheit. " + weather_nexthoursummary
 
-      # counter = 0
-      # umbrella_window = 12 #Number of hours of search
-      # umbrella_window.to_i.times do |hour|
-      #   precip_prob = weather_hourly_data[hour].fetch("precipProbability")
-      #   if precip_prob > 0.5
-      #     counter += 1
-      #   end
-      # end  
+      weather_hourly_data = weather_hourly.fetch("data")
+      if weather_hourly_data == ""
+        weather_hourly_data_status = false
+      else
+        counter = 0
+        umbrella_window = 12 #Number of hours of search
+        umbrella_window.to_i.times do |hour|
+          precip_prob = weather_hourly_data[hour].fetch("precipProbability")
+          if precip_prob > 0.5
+            counter += 1
+          end
+        end  
+      end
+        p weather_currentsummary
 
-      # p weather_currentsummary
-
-      # if counter > 0
-      #   p "It's likely to rain in the next " + umbrella_window.to_s + " hours. You should take an umbrella!"
-      # end
+      if counter > 0 and weather_hourly_data_status != false
+        p "It's likely to rain in the next " + umbrella_window.to_s + " hours. You should take an umbrella!"
+      end
     end
 end
