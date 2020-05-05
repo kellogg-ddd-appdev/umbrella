@@ -25,39 +25,53 @@ task(:umbrella) do
       user_long = results_location.fetch("lng")
       user_latlong = user_lat.to_s + "," + user_long.to_s
 
+
       ## Get Dark Sky data
       weather_url =  "https://api.darksky.net/forecast/" + darksky_api_key + "/" + user_latlong
 
       weather_raw_file = open(weather_url).read
 
       weather_parsed = JSON.parse(weather_raw_file)
-      
-      weather_c = weather_parsed.fetch("currently")
-      weather_temp = weather_c.fetch("temperature")
-      weather_currenttemp = weather_temp.round(0)
-      weather_currentweather = weather_c.fetch("summary")
 
-      weather_hourly = weather_parsed.fetch("hourly")
-      weather_minutely = weather_parsed.fetch("minutely")
-      weather_nexthoursummary = weather_minutely.fetch("summary") #Use this for summary of next hour
-      
-      weather_currentsummary = "Current weather is: " + weather_currentweather + ", with a temperature of " + weather_currenttemp.to_s + " degrees Farenheit. " + weather_nexthoursummary
-      
-      weather_hourly_data = weather_hourly.fetch("data")
-
-      counter = 0
-      umbrella_window = 12 #Number of hours of search
-      umbrella_window.to_i.times do |hour|
-        precip_prob = weather_hourly_data[hour].fetch("precipProbability")
-        if precip_prob > 0.5
-          counter += 1
-        end
-      end  
-
-      p weather_currentsummary
-
-      if counter > 0
-        p "It's likely to rain in the next " + umbrella_window.to_s + " hours. You should take an umbrella!"
+      weather_c = weather_parsed.fetch("currently", nil)
+      if weather_c.class != Hash
+        weather_c_status = false
+      else
+        weather_temp = weather_c.fetch("temperature")
+        weather_currenttemp = weather_temp.round(0)
+        weather_currentweather = weather_c.fetch("summary")
       end
+      
+      weather_hourly = weather_parsed.fetch("hourly", nil)
+      if weather_hourly.class != Hash
+        weather_hourly_status = false
+      end
+
+      weather_minutely = weather_parsed.fetch("minutely", nil)
+      if weather_minutely.class != Hash
+        weather_minutely_status = false
+      end
+      ap weather_minutely_status
+
+      # weather_nexthoursummary = weather_minutely.fetch("summary") #Use this for summary of next hour
+      
+      # weather_currentsummary = "Current weather is: " + weather_currentweather + ", with a temperature of " + weather_currenttemp.to_s + " degrees Farenheit. " + weather_nexthoursummary
+      
+      # weather_hourly_data = weather_hourly.fetch("data")
+
+      # counter = 0
+      # umbrella_window = 12 #Number of hours of search
+      # umbrella_window.to_i.times do |hour|
+      #   precip_prob = weather_hourly_data[hour].fetch("precipProbability")
+      #   if precip_prob > 0.5
+      #     counter += 1
+      #   end
+      # end  
+
+      # p weather_currentsummary
+
+      # if counter > 0
+      #   p "It's likely to rain in the next " + umbrella_window.to_s + " hours. You should take an umbrella!"
+      # end
     end
 end
