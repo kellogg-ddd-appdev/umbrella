@@ -1,17 +1,23 @@
 task(:umbrella) do
   
-  geocoding_url = "https://maps.googleapis.com/maps/api/geocode/json?address=Merchandise%20Mart%20Chicago&key=REPLACE_THIS_QUERY_STRING_PARAMETER_WITH_YOUR_API_TOKEN"
-  weather_url =  "https://api.darksky.net/forecast/26f63e92c5006b5c493906e7953da893/41.8887,-87.6355"
+  geocoding_api_key = ENV.fetch("GEOCODING_API_KEY")
+  darksky_api_key = ENV.fetch("DARKSKY_API_KEY")
+
+  geocoding_url = "https://maps.googleapis.com/maps/api/geocode/json?address=Merchandise%20Mart%20Chicago&key=" + geocoding_api_key
+  weather_url =  "https://api.darksky.net/forecast/" + darksky_api_key + "/41.8887,-87.6355"
+
   # Get Google Maps geocoding data
+  address_raw_file = open(geocoding_url).read
+  address_parsed = JSON.parse(address_raw_file)
 
-  
-  weather_raw_file = open(weather_url).read
+  # # Get Dark Sky data
+  # weather_raw_file = open(weather_url).read
 
-  weather_parsed = JSON.parse(weather_raw_file)
-  weather_c = weather_parsed.fetch("currently")
-  weather_temp = weather_c.fetch("temperature")
+  # weather_parsed = JSON.parse(weather_raw_file)
+  # weather_c = weather_parsed.fetch("currently")
+  # weather_temp = weather_c.fetch("temperature")
 
-  ap weather_temp
+  # ap weather_temp
 
 
 end
