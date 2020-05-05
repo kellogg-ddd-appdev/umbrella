@@ -33,28 +33,21 @@ task(:umbrella) do
 
       weather_parsed = JSON.parse(weather_raw_file)
 
-      weather_c = weather_parsed.fetch("currently", nil)
-      if weather_c.class != Hash
-        weather_c_status = false
-      else
+      weather_c = weather_parsed.fetch("currently", {"temperature" => nil, "summary" => nil})
         weather_temp = weather_c.fetch("temperature")
         weather_currenttemp = weather_temp.round(0)
         weather_currentweather = weather_c.fetch("summary")
-      end
-      
-      weather_hourly = weather_parsed.fetch("hourly", nil)
-      if weather_hourly.class != Hash
-        weather_hourly_status = false
-      end
 
-      weather_minutely = weather_parsed.fetch("minutely", nil)
-      if weather_minutely.class != Hash
-        weather_minutely_status = false
-      end
-      ap weather_minutely_status
+      # weather_hourly = weather_parsed.fetch("hourly", nil)
+      # if weather_hourly.class != Hash
+      #   weather_hourly_status = false
+      # end
 
-      # weather_nexthoursummary = weather_minutely.fetch("summary") #Use this for summary of next hour
-      
+      weather_minutely = weather_parsed.fetch("minutely", {"summary" => nil})
+  
+      weather_nexthoursummary = weather_minutely.fetch("summary") #Use this for summary of next hour
+      ap weather_nexthoursummary
+
       # weather_currentsummary = "Current weather is: " + weather_currentweather + ", with a temperature of " + weather_currenttemp.to_s + " degrees Farenheit. " + weather_nexthoursummary
       
       # weather_hourly_data = weather_hourly.fetch("data")
